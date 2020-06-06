@@ -292,7 +292,7 @@ class Main extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+        flex: 1,
 	},
 	drawerHeader: {
 		backgroundColor: '#5637DD',
