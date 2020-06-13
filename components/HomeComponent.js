@@ -56,7 +56,7 @@ class Home extends Component {
             this.state.scaleValue,
             {
                 toValue: 1,
-                duration: 1500
+                duration: 500
             }
         ).start();
     }
