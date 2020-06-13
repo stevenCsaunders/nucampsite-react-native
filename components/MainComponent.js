@@ -4,6 +4,7 @@ import Directory from './DirectoryComponent'
 import About from './AboutComponent'
 import Contact from './ContactComponent'
 import CampsiteInfo from './CampsiteInfoComponent'
+import Favorites from './FavoritesComponent';
 import { Icon } from 'react-native-elements'
 import {
 	View,
@@ -34,6 +35,29 @@ const mapDispatchToProps = {
 	fetchPromotions,
 	fetchPartners,
 }
+
+const FavoritesNavigator = createStackNavigator(
+    {
+        Favorites: { screen: Favorites }
+    },
+    {
+        navigationOptions: ({navigation}) => ({
+            headerStyle: {
+                backgroundColor: '#5637DD'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                color: '#fff'
+            },
+            headerLeft: <Icon
+                name='heart'
+                type='font-awesome'
+                iconStyle={styles.stackIcon}
+                onPress={() => navigation.toggleDrawer()}
+            />
+        })
+    }
+);
 
 const DirectoryNavigator = createStackNavigator(
 	{
@@ -258,6 +282,20 @@ const MainNavigator = createDrawerNavigator(
 				),
 			},
 		},
+        Favorites: {
+            screen: FavoritesNavigator,
+            navigationOptions: {
+                drawerLabel: 'My Favorites',
+                drawerIcon: ({tintColor}) => (
+                    <Icon
+                        name='heart'
+                        type='font-awesome'
+                        size={24}
+                        color={tintColor}
+                    />
+                )
+            }
+        },
 	},
 	{
 		drawerBackgroundColor: '#CEC8FF',
@@ -292,7 +330,7 @@ class Main extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-        flex: 1,
+		flex: 1,
 	},
 	drawerHeader: {
 		backgroundColor: '#5637DD',
