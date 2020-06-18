@@ -116,6 +116,7 @@ class LoginTab extends Component {
     }
 }
 
+//set initial register state
 class RegisterTab extends Component {
 
     constructor(props) {
@@ -132,6 +133,7 @@ class RegisterTab extends Component {
         };
     }
 
+    //register tab navigation options
     static navigationOptions = {
         title: 'Register',
         tabBarIcon: ({tintColor}) => (
@@ -143,10 +145,11 @@ class RegisterTab extends Component {
         )
     }
 
+    //ask for image from camera
     getImageFromCamera = async () => {
         const cameraPermission = await Permissions.askAsync(Permissions.CAMERA);
         const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
+        //if both camera and camera roll access permitted
         if (cameraPermission.status === 'granted' && cameraRollPermission.status === 'granted') {
             const capturedImage = await ImagePicker.launchCameraAsync({
                 allowsEditing: true,
@@ -159,6 +162,7 @@ class RegisterTab extends Component {
         }
     }
 
+    //set registration information to the secure store
     handleRegister() {
         console.log(JSON.stringify(this.state));
         if (this.state.remember) {
@@ -254,6 +258,7 @@ class RegisterTab extends Component {
     }
 }
 
+//create bottom tab navigtion
 const Login = createBottomTabNavigator(
     {
         Login: LoginTab,
