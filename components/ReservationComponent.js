@@ -5,11 +5,13 @@ import {
 	StyleSheet,
 	Picker,
 	Switch,
-    Button,
-    Alert
+	Button,
+	Alert,
 } from 'react-native'
 import DatePicker from 'react-native-datepicker'
 import * as Animatable from 'react-native-animatable'
+import * as Permissions from 'expo-permissions'
+import { Notifications } from 'expo'
 
 class Reservation extends Component {
 	constructor(props) {
@@ -27,26 +29,55 @@ class Reservation extends Component {
 		title: 'Reserve Campsite',
 	}
 
-	handleReservation() { // handling the search button press
-        Alert.alert(
-            `Begin Search?`, // Title of alert
-            `Number of campers ${this.state.campers}\nHike in? ${this.state.hikeIn}\nDate: ${this.state.date}`, //Message for alert
-            [
-                { 
-                    text: 'Cancel', 
-                    onPress: () => this.resetForm(), // reset the form on press
-                    style: ' cancel'
-                },
-                {
-                    text: 'OK',
-                    onPress: () => this.resetForm() //reset the form on press
-                }
-            ],
-            { cancelable: false }
-        );
+	handleReservation() {
+		// handling the search button press
+		Alert.alert(
+			`Begin Search?`, // Title of alert
+			`Number of campers ${this.state.campers}\nHike in? ${this.state.hikeIn}\nDate: ${this.state.date}`, //Message for alert
+			[
+				{
+					text: 'Cancel',
+					onPress: () => this.resetForm(), // reset the form on press
+					style: ' cancel',
+				},
+				{
+					text: 'OK', 
+                    onPress: () => {
+                        this.presentLocalNotification(this.state.date); //shows the local notificaoin when pressing the OK button
+                        this.resetForm();
+                    } //reset the form on press
+				},
+			],
+			{ cancelable: false }
+		)
+	}
+
+	//awaits permission from user to show notificaiton
+	async obtainNotificationPermission() {
+        const permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
+        if (permission.status !== 'granted') {
+            const permission = await Permissions.askAsync(Permissions.USER_FACING_NOTIFICATIONS);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to show notifications');
+            }
+            return permission;
+        }
+        return permission;
     }
 
-    resetForm() {           // reset the form to initial state
+	// presents the notification to the user with selected date
+    async presentLocalNotification(date) {
+        const permission = await this.obtainNotificationPermission();
+        if (permission.status === 'granted') {
+            Notifications.presentLocalNotificationAsync({
+                title: `Your Campsite Reservation Search`,
+                body: `Search for ${date} requested`
+            });
+        }
+    }
+
+	resetForm() {
+		// reset the form to initial state
 		this.setState({
 			campers: 1,
 			hikeIn: false,
@@ -57,7 +88,7 @@ class Reservation extends Component {
 
 	render() {
 		return (
-			<Animatable.View  //animate in the view 
+			<Animatable.View //animate in the view
 				animation="zoomIn"
 				duration={2000}
 				delay={1000}
